@@ -78,13 +78,17 @@ function Signup() {
       navigate("/");
     } catch (err) {
       console.error("Signup error:", err);
-      let errMsg = "Failed to create an account. Please try again.";
+      let errMsg = "Failed to create an account.";
       if (err.code === "auth/email-already-in-use") {
         errMsg = "This email is already registered.";
       } else if (err.code === "auth/invalid-email") {
         errMsg = "Invalid email address format.";
       } else if (err.code === "auth/weak-password") {
         errMsg = "The password is too weak. Please use at least 6 characters.";
+      } else if (err.code === "permission-denied") {
+        errMsg = "Firestore permission denied. Please verify your Firestore Database security rules in the Firebase Console.";
+      } else {
+        errMsg = `Error: ${err.message || err.code || "Please try again."}`;
       }
       setError(errMsg);
     } finally {
