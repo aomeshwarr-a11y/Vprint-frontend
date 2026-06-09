@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -96,4 +97,75 @@ function Login() {
   );
 }
 
-export default Login;
+export default Login;
+=======
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+function Login() {
+  const navigate = useNavigate();
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setLoginData({
+      ...loginData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+  e.preventDefault();
+
+  localStorage.setItem("isLoggedIn", "true");
+
+const redirect =
+  localStorage.getItem("redirectAfterLogin");
+
+if (redirect === "priority-access") {
+
+  localStorage.removeItem(
+    "redirectAfterLogin"
+  );
+
+  navigate("/");
+
+} else {
+
+  navigate("/");
+}
+  };
+  return (
+    <div className="auth-page">
+      <div className="auth-card">
+        <h2>Welcome Back</h2>
+        <p>Login to manage your reservations.</p>
+
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            onChange={handleChange}
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={handleChange}
+          />
+
+          <button type="submit" className="auth-btn">
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default Login;
+>>>>>>> 500509d5de46df984cdf6ab4fcf2206eb8103f90

@@ -37,10 +37,10 @@ function HowItWork() {
     },
   ];
   return (
-   <section className="how-section py-5">
+   <section id="how-it-works" className="how-section py-5">
       <div className="container">
 
-        <div className="text-center mb-5">
+        <div className="text-center mb-5 ">
           <h2 className="fw-bold">How It Works</h2>
           <div className="title-line mx-auto"></div>
         </div>

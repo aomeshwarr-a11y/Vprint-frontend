@@ -28,6 +28,7 @@ function Signup() {
     e.preventDefault();
     setError("");
 
+<<<<<<< HEAD
     if (!formData.email || !formData.password || !formData.name) {
       setError("Name, email, and password are required fields.");
       return;
@@ -86,6 +87,27 @@ function Signup() {
     }
   };
 
+=======
+  localStorage.setItem("isLoggedIn", "true");
+localStorage.setItem("userName", formData.name);
+
+const redirect =
+  localStorage.getItem("redirectAfterLogin");
+
+if (redirect === "priority-access") {
+
+  localStorage.removeItem(
+    "redirectAfterLogin"
+  );
+
+  navigate("/");
+
+} else {
+
+  navigate("/");
+}
+};
+>>>>>>> 500509d5de46df984cdf6ab4fcf2206eb8103f90
   
 
   return (

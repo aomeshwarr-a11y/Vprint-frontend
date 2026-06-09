@@ -3,7 +3,7 @@ import React from 'react';
 import Hero from './Hero';
 import HowItWork from './HowItWork';
 import FAQ from './FAQ';
-import ReadyToStart from './ContactSection';
+import PriorityWaitlistSection from './PriorityWaitlistSection';
 
 
 function HomePage() {
@@ -13,7 +13,8 @@ function HomePage() {
         <Hero/>
         <HowItWork/>
         <FAQ/>
-        <ReadyToStart/>
+        <PriorityWaitlistSection/>
+
         
     </>
   );

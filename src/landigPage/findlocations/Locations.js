@@ -8,23 +8,35 @@ import {
 } from "react-icons/fa";
 
 import collage from "../../assets/campus-hd.png";
+import PriorityModal from "../home/PriorityModal";
 
 function Locations() {
   const navigate = useNavigate();
+  const [showPriorityModal, setShowPriorityModal] = useState(false);
+
+
+
   const [searchTerm, setSearchTerm] = useState("");
   const [cityFilter, setCityFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 3;
   const handleReserve = (locationId) => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
+    const priorityMember =
+    localStorage.getItem("priorityMember");
 
-  if (!isLoggedIn) {
-    navigate("/login");
+  if (!priorityMember) {
+
+    alert(
+      "Only Priority Members can reserve locations."
+    );
+
     return;
   }
 
   navigate(`/location/${locationId}`);
+
+  
 };
 
   const locations = [
@@ -212,25 +224,25 @@ const totalPages = Math.ceil(
 
                 <div className="location-footer">
 
-                  <div>
-                    <small>STUDENT STRENGTH</small>
-                    <h5>{location.students}</h5>
-                  </div>
+  <div>
+    <small>STUDENT STRENGTH</small>
+    <h5>{location.students}</h5>
+  </div>
 
-                  {location.status === "Available" ? (
-  <button
-  className="reserve-btn"
-  onClick={() => handleReserve(location.id)}
->
-  Reserve Now
-</button>
-) : (
-  <button className="reserved-btn" disabled>
-    {location.status}
-  </button>
-)}
+  {location.status === "Available" ? (
+    <button
+      className="reserve-btn"
+      onClick={() => handleReserve(location.id)}
+    >
+      View Details
+    </button>
+  ) : (
+    <button className="reserved-btn" disabled>
+      {location.status}
+    </button>
+  )}
 
-                </div>
+</div>
 
               </div>
 
