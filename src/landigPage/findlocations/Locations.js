@@ -234,7 +234,7 @@ const totalPages = Math.ceil(
       className="reserve-btn"
       onClick={() => handleReserve(location.id)}
     >
-      View Details
+      Reserve Now 
     </button>
   ) : (
     <button className="reserved-btn" disabled>

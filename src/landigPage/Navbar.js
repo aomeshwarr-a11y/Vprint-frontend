@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../firebase";
+import { supabase } from "../supabase";
+
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -9,12 +9,23 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const [user, setUser] = useState(null);
+ 
 
- // Firebase Auth Listener
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
+ useEffect(() => {
+  const getUser = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     if (user) {
-      const name = user.displayName || user.email || "User";
+  setUser(user);
+
+  const name =
+    user.user_metadata?.full_name ||
+    user.email ||
+    "User";
+
       setIsLoggedIn(true);
       setUserName(name);
 
@@ -27,11 +38,33 @@ useEffect(() => {
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("userName");
     }
-  });
+ };
 
-  return () => unsubscribe();
+  getUser();
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange(
+    async (event, session) => {
+     if (session?.user) {
+  setUser(session.user);
+
+  const name =
+    session.user.user_metadata?.full_name ||
+    session.user.email;
+
+        setIsLoggedIn(true);
+        setUserName(name);
+      } else {
+        setIsLoggedIn(false);
+setUserName("");
+setUser(null);
+      }
+    }
+  );
+
+  return () => subscription.unsubscribe();
 }, []);
-
 
 // Close dropdown when clicking outside
 useEffect(() => {
@@ -53,14 +86,20 @@ useEffect(() => {
     );
   };
 }, []);
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate("/");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
+  
+const handleLogout = async () => {
+  try {
+    await supabase.auth.signOut();
+
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userName");
+
+    navigate("/");
+  } catch (error) {
+    console.error(error);
+  }
+};
+      
 
   return (
     <nav className="navbar bg-white border-bottom shadow-sm py-3 fixed-top">
@@ -119,7 +158,7 @@ useEffect(() => {
   >
     <img
       src={
-        auth.currentUser?.photoURL ||
+        
         "https://cdn-icons-png.flaticon.com/512/149/149071.png"
       }
       alt="Profile"
@@ -132,14 +171,14 @@ useEffect(() => {
       <div className="dropdown-header">
         <img
           src={
-            auth.currentUser?.photoURL ||
+            
             "https://cdn-icons-png.flaticon.com/512/149/149071.png"
           }
           alt="Profile"
           className="dropdown-avatar"
         />
 
-        <h6>{userName}</h6>
+        <h6>{user?.user_metadata?.full_name}</h6>
       </div>
 
       <Link

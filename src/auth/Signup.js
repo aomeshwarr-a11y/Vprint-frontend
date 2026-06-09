@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase";
+import { supabase } from "../supabase";
+
 
 function Signup() {
   const navigate = useNavigate();
@@ -16,6 +15,7 @@ function Signup() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -25,77 +25,43 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
 
-    if (!formData.email || !formData.password || !formData.name) {
-      setError("Name, email, and password are required fields.");
-      return;
-    }
+  setError("");
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
+  if (formData.password !== formData.confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
 
-    if (formData.password.length < 6) {
-      setError("Password should be at least 6 characters long.");
-      return;
-    }
+  setLoading(true);
 
-    setLoading(true);
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
-      
-      // Update display name
-      await updateProfile(userCredential.user, {
-        displayName: formData.name,
-      });
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: {
+          full_name: formData.name,
+          phone: formData.phone,
+          city: formData.city,
+        },
+      },
+    });
 
-      // Save user details to Firestore
-      await setDoc(doc(db, "users", userCredential.user.uid), {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || "",
-        city: formData.city || "",
-        createdAt: new Date().toISOString(),
-      });
+    if (error) throw error;
 
-      // Synchronize cache
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userName", formData.name);
+    alert(
+      "Account created successfully. Please check your email for verification."
+    );
 
-      // Handle redirect after login if priority access requested
-      const redirect = localStorage.getItem("redirectAfterLogin");
-      if (redirect === "priority-access") {
-        localStorage.removeItem("redirectAfterLogin");
-      }
-
-      navigate("/");
-    } catch (err) {
-      console.error("Signup error:", err);
-      let errMsg = "Failed to create an account.";
-      if (err.code === "auth/email-already-in-use") {
-        errMsg = "This email is already registered.";
-      } else if (err.code === "auth/invalid-email") {
-        errMsg = "Invalid email address format.";
-      } else if (err.code === "auth/weak-password") {
-        errMsg = "The password is too weak. Please use at least 6 characters.";
-      } else if (err.code === "permission-denied") {
-        errMsg = "Firestore permission denied. Please verify your Firestore Database security rules in the Firebase Console.";
-      } else {
-        errMsg = `Error: ${err.message || err.code || "Please try again."}`;
-      }
-      setError(errMsg);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    navigate("/login");
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="auth-page">
       <div className="auth-card">

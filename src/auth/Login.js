@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { supabase } from "../supabase";
 
 function Login() {
   const navigate = useNavigate();
@@ -20,53 +19,50 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    if (!loginData.email || !loginData.password) {
-      setError("Please fill in all fields.");
-      return;
+  if (!loginData.email || !loginData.password) {
+    setError("Please fill in all fields.");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const { data, error } =
+      await supabase.auth.signInWithPassword({
+        email: loginData.email,
+        password: loginData.password,
+      });
+
+    if (error) throw error;
+
+    const user = data.user;
+
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem(
+      "userName",
+      user.user_metadata?.full_name ||
+        user.email ||
+        "User"
+    );
+
+    navigate("/");
+  } catch (err) {
+    console.error(err);
+
+    if (
+      err.message.includes("Invalid login credentials")
+    ) {
+      setError("Invalid email or password");
+    } else {
+      setError(err.message);
     }
-
-    setLoading(true);
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        loginData.email,
-        loginData.password
-      );
-
-      // Synchronize cache
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem(
-        "userName",
-        userCredential.user.displayName || userCredential.user.email || "User"
-      );
-
-      // Handle redirect after login if priority access requested
-      const redirect = localStorage.getItem("redirectAfterLogin");
-      if (redirect === "priority-access") {
-        localStorage.removeItem("redirectAfterLogin");
-      }
-
-      navigate("/");
-    } catch (err) {
-      console.error("Login error:", err);
-      let errMsg = "Failed to log in. Please check your credentials.";
-      if (
-        err.code === "auth/user-not-found" ||
-        err.code === "auth/wrong-password" ||
-        err.code === "auth/invalid-credential"
-      ) {
-        errMsg = "Invalid email or password.";
-      } else if (err.code === "auth/invalid-email") {
-        errMsg = "Invalid email address format.";
-      }
-      setError(errMsg);
-    } finally {
-      setLoading(false);
-    }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="auth-page">
