@@ -23,9 +23,23 @@ function Signup() {
   e.preventDefault();
 
   localStorage.setItem("isLoggedIn", "true");
-  localStorage.setItem("userName", formData.name);
+localStorage.setItem("userName", formData.name);
+
+const redirect =
+  localStorage.getItem("redirectAfterLogin");
+
+if (redirect === "priority-access") {
+
+  localStorage.removeItem(
+    "redirectAfterLogin"
+  );
 
   navigate("/");
+
+} else {
+
+  navigate("/");
+}
 };
   
 

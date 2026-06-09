@@ -87,8 +87,23 @@ function LocationDetails() {
   }
 
   const handleReservation = () => {
-    alert("Razorpay integration coming soon.");
-  };
+
+  const priorityMember =
+    localStorage.getItem("priorityMember");
+
+  if (!priorityMember) {
+
+    alert(
+      "Only Priority Members can reserve locations."
+    );
+
+    return;
+  }
+
+  alert(
+    "Location Reserved Successfully!"
+  );
+};
 
   return (
     <section className="location-details-page">
@@ -136,28 +151,28 @@ function LocationDetails() {
 
             <div className="reservation-box">
 
-              <div>
-                <h3>Reservation Fee</h3>
-                <h2>₹500</h2>
-              </div>
+  <div>
+    <h3>Reservation Status</h3>
+    <h2>{location.status}</h2>
+  </div>
 
-              {location.status === "Available" ? (
-                <button
-                  className="confirm-btn"
-                  onClick={handleReservation}
-                >
-                  Confirm Reservation
-                </button>
-              ) : (
-                <button
-                  className="reserved-btn"
-                  disabled
-                >
-                  {location.status}
-                </button>
-              )}
+  {location.status === "Available" ? (
+    <button
+      className="confirm-btn"
+      onClick={handleReservation}
+    >
+      Confirm Reservation
+    </button>
+  ) : (
+    <button
+      className="reserved-btn"
+      disabled
+    >
+      {location.status}
+    </button>
+  )}
 
-            </div>
+</div>
 
           </div>
 

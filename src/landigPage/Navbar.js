@@ -32,10 +32,37 @@ function Navbar() {
         <div className="navbar-content">
 
           <ul className="navbar-nav nav-menu">
-            <li><Link className="nav-link" to="/">Find Locations</Link></li>
-            <li><Link className="nav-link" to="/">How it Works</Link></li>
-            <li><Link className="nav-link" to="/">Benefits</Link></li>
-            <li><Link className="nav-link" to="/">FAQ</Link></li>
+            <li><Link className="nav-link" to="/">Home</Link></li>
+            <li><Link className="nav-link" to="/locations">Find Locations</Link></li>
+            <li><Link className="nav-link" to="#how-it-works" onClick={(e) => {
+    e.preventDefault();
+
+    document
+      .getElementById("how-it-works")
+      ?.scrollIntoView({
+        behavior: "smooth",
+      });
+  }}>How it Works</Link></li>
+            <li><Link className="nav-link" to="#faq" onClick={(e) => {
+    e.preventDefault();
+
+    document
+      .getElementById("faq")
+      ?.scrollIntoView({
+        behavior: "smooth",
+      });
+  }}>FAQ</Link></li>
+            <li><Link className="nav-link" to="#priority-wait-list"
+            onClick={(e) => {
+    e.preventDefault();
+
+    document
+      .getElementById("priority-wait-list")
+      ?.scrollIntoView({
+        behavior: "smooth",
+      });
+  }}
+            >Priority Wait List</Link></li>
           </ul>
 
           {!isLoggedIn ? (

@@ -20,9 +20,22 @@ function Login() {
 
   localStorage.setItem("isLoggedIn", "true");
 
-  navigate("/");
-};
+const redirect =
+  localStorage.getItem("redirectAfterLogin");
 
+if (redirect === "priority-access") {
+
+  localStorage.removeItem(
+    "redirectAfterLogin"
+  );
+
+  navigate("/");
+
+} else {
+
+  navigate("/");
+}
+  };
   return (
     <div className="auth-page">
       <div className="auth-card">
