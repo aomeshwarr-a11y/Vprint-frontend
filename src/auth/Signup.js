@@ -38,16 +38,38 @@ function Signup() {
 
   try {
     const { data, error } = await supabase.auth.signUp({
+  email: formData.email,
+  password: formData.password,
+  options: {
+    data: {
+      full_name: formData.name,
+      phone: formData.phone,
+      city: formData.city,
+    },
+  },
+});
+
+if (error) throw error;
+
+const user = data.user;
+
+if (user) {
+  const { error: insertError } = await supabase
+    .from("users")
+    .insert({
+      id: user.id,
+      full_name: formData.name,
       email: formData.email,
-      password: formData.password,
-      options: {
-        data: {
-          full_name: formData.name,
-          phone: formData.phone,
-          city: formData.city,
-        },
-      },
+      phone: formData.phone,
+      city: formData.city,
     });
+
+  if (insertError) {
+  console.error("Insert Error:", insertError);
+  alert(insertError.message);
+  return;
+}
+}
 
     if (error) throw error;
 

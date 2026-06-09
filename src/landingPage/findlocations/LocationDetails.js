@@ -17,6 +17,7 @@ function LocationDetails() {
           students: "5,000+",
           status: "Reserved",
           image: collage,
+          description: "Prime location in the heart of JBIET campus with high student footfall throughout the day."
         },
         {
           id: 2,
@@ -26,6 +27,7 @@ function LocationDetails() {
           students: "4,000+",
           status: "Reserved",
           image: collage,
+          description: "Strategically located at the central canteen hub, serving students from all engineering branches."
         },
         {
           id: 3,
@@ -35,6 +37,7 @@ function LocationDetails() {
           students: "5,500+",
           status: "Reserved",
           image: collage,
+          description: "High-traffic zone in the main cafeteria area, ideal for automated printing services."
         },
         {
           id: 4,
@@ -44,6 +47,7 @@ function LocationDetails() {
           students: "5,000+",
           status: "Available",
           image: collage,
+          description: "Available spot in the main canteen area with excellent visibility and access."
         },
         {
           id: 5,
@@ -53,15 +57,17 @@ function LocationDetails() {
           students: "12,000+",
           status: "Available",
           image: collage,
+          description: "Massive student base at CMR campus. This canteen location is a goldmine for high-volume printing."
         },
         {
           id: 6,
-          college: "GLOBAL COLLAGE",
+          college: "GLOBAL COLLEGE",
           city: "Hyderabad",
           area: "Tech Park Food Court",
           students: "4,000+",
           status: "Available",
           image: collage,
+          description: "Located in the Tech Park Food Court, serving both students and faculty members."
         },
         {
           id: 7,
@@ -71,6 +77,7 @@ function LocationDetails() {
           students: "5,000+",
           status: "Available",
           image: collage,
+          description: "Centralized location in the main canteen area of MGIET campus."
         },
       ];
 

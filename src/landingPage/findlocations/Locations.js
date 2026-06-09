@@ -8,13 +8,9 @@ import {
 } from "react-icons/fa";
 
 import collage from "../../assets/campus-hd.png";
-import PriorityModal from "../home/PriorityModal";
 
 function Locations() {
   const navigate = useNavigate();
-  const [showPriorityModal, setShowPriorityModal] = useState(false);
-
-
 
   const [searchTerm, setSearchTerm] = useState("");
   const [cityFilter, setCityFilter] = useState("All");
@@ -87,7 +83,7 @@ function Locations() {
     },
     {
       id: 6,
-      college: "GLOBAL COLLAGE",
+      college: "GLOBAL COLLEGE",
       city: "Hyderabad",
       area: "Tech Park Food Court",
       students: "4,000+",
