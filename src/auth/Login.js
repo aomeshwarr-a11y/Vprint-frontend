@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
 
 function Login() {
   const navigate = useNavigate();
@@ -30,18 +28,24 @@ function Login() {
 
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        loginData.email,
-        loginData.password
+      // Retrieve users from localStorage
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      
+      // Find user with matching email and password
+      const user = users.find(
+        u => u.email === loginData.email && u.password === loginData.password
       );
 
-      // Synchronize cache
+      if (!user) {
+        setError("Invalid email or password.");
+        setLoading(false);
+        return;
+      }
+
+      // Set login state
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem(
-        "userName",
-        userCredential.user.displayName || userCredential.user.email || "User"
-      );
+      localStorage.setItem("userName", user.name);
+      localStorage.setItem("userEmail", user.email);
 
       // Handle redirect after login if priority access requested
       const redirect = localStorage.getItem("redirectAfterLogin");
@@ -52,17 +56,7 @@ function Login() {
       navigate("/");
     } catch (err) {
       console.error("Login error:", err);
-      let errMsg = "Failed to log in. Please check your credentials.";
-      if (
-        err.code === "auth/user-not-found" ||
-        err.code === "auth/wrong-password" ||
-        err.code === "auth/invalid-credential"
-      ) {
-        errMsg = "Invalid email or password.";
-      } else if (err.code === "auth/invalid-email") {
-        errMsg = "Invalid email address format.";
-      }
-      setError(errMsg);
+      setError("Failed to log in. Please try again.");
     } finally {
       setLoading(false);
     }

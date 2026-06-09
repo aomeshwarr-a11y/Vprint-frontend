@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../firebase";
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -10,27 +8,19 @@ function Navbar() {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
- // Firebase Auth Listener
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const name = user.displayName || user.email || "User";
+  // Check login state from localStorage
+  useEffect(() => {
+    const isLoggedInValue = localStorage.getItem("isLoggedIn") === "true";
+    const userName = localStorage.getItem("userName");
+    
+    if (isLoggedInValue && userName) {
       setIsLoggedIn(true);
-      setUserName(name);
-
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userName", name);
+      setUserName(userName);
     } else {
       setIsLoggedIn(false);
       setUserName("");
-
-      localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("userName");
     }
-  });
-
-  return () => unsubscribe();
-}, []);
+  }, []);
 
 
 // Close dropdown when clicking outside
@@ -53,13 +43,13 @@ useEffect(() => {
     );
   };
 }, []);
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate("/");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    setIsLoggedIn(false);
+    setUserName("");
+    navigate("/");
   };
 
   return (
@@ -110,7 +100,7 @@ useEffect(() => {
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
                   <img
-                    src={auth.currentUser?.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                    src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
                     alt="Profile"
                     className="profile-avatar"
                   />
@@ -120,7 +110,7 @@ useEffect(() => {
                   <div className="profile-dropdown">
                     <div className="dropdown-header">
                       <img
-                        src={auth.currentUser?.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                        src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
                         alt="Profile"
                         className="dropdown-avatar"
                       />

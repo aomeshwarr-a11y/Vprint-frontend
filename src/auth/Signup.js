@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase";
 
 function Signup() {
   const navigate = useNavigate();
@@ -45,29 +42,33 @@ function Signup() {
 
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
+      // Save user details to localStorage
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
       
-      // Update display name
-      await updateProfile(userCredential.user, {
-        displayName: formData.name,
-      });
+      // Check if email already exists
+      if (users.some(user => user.email === formData.email)) {
+        setError("This email is already registered.");
+        setLoading(false);
+        return;
+      }
 
-      // Save user details to Firestore
-      await setDoc(doc(db, "users", userCredential.user.uid), {
+      // Create user object
+      const newUser = {
+        id: Date.now().toString(),
         name: formData.name,
         email: formData.email,
         phone: formData.phone || "",
         city: formData.city || "",
+        password: formData.password,
         createdAt: new Date().toISOString(),
-      });
+      };
 
-      // Synchronize cache
+      // Save user to localStorage
+      users.push(newUser);
+      localStorage.setItem("users", JSON.stringify(users));
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("userName", formData.name);
+      localStorage.setItem("userEmail", formData.email);
 
       // Handle redirect after login if priority access requested
       const redirect = localStorage.getItem("redirectAfterLogin");
@@ -78,19 +79,7 @@ function Signup() {
       navigate("/");
     } catch (err) {
       console.error("Signup error:", err);
-      let errMsg = "Failed to create an account.";
-      if (err.code === "auth/email-already-in-use") {
-        errMsg = "This email is already registered.";
-      } else if (err.code === "auth/invalid-email") {
-        errMsg = "Invalid email address format.";
-      } else if (err.code === "auth/weak-password") {
-        errMsg = "The password is too weak. Please use at least 6 characters.";
-      } else if (err.code === "permission-denied") {
-        errMsg = "Firestore permission denied. Please verify your Firestore Database security rules in the Firebase Console.";
-      } else {
-        errMsg = `Error: ${err.message || err.code || "Please try again."}`;
-      }
-      setError(errMsg);
+      setError("Failed to create an account. Please try again.");
     } finally {
       setLoading(false);
     }
