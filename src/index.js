@@ -5,6 +5,7 @@ import './index.css';
 import HomePage from './landigPage/home/HomePage';
 import Navbar from './landigPage/Navbar';
 import Footer from './landigPage/Footer';
+import LocationPage from './landigPage/findlocations/LocationPage';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -14,6 +15,7 @@ root.render(
       <Navbar />
       <Routes>
         <Route path='/' element={<HomePage/>}/>
+        <Route path='/locations' element={<LocationPage/>}/>
       </Routes>
       <Footer/>
     </BrowserRouter>

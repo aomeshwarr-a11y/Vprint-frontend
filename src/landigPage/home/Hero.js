@@ -1,5 +1,6 @@
 import React from 'react';
 import campusBg from '../../assets/campus-hd.png';
+import { Link } from 'react-router-dom';
 
 function Hero() {
   return (
@@ -31,7 +32,7 @@ function Hero() {
 
             <div className="d-flex flex-column flex-sm-row gap-3 mt-5 fs-1">
               <button className="btn-location">
-                View Available Locations
+                <Link to="/locations">View Available Locations</Link>
                 <span className="ms-3">→</span>
               </button>
 
