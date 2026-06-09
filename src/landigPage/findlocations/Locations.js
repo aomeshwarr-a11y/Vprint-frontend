@@ -20,7 +20,7 @@ function Locations() {
   const [cityFilter, setCityFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const cardsPerPage = 3;
+  const cardsPerPage = 9;
   const handleReserve = (locationId) => {
     const priorityMember =
     localStorage.getItem("priorityMember");
