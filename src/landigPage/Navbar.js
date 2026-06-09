@@ -1,71 +1,64 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Navbar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("isLoggedIn");
+    const name = localStorage.getItem("userName");
+
+    if (loggedIn === "true") {
+      setIsLoggedIn(true);
+      setUserName(name || "User");
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userName");
+    window.location.reload();
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2">
+    <nav className="navbar bg-white border-bottom shadow-sm py-3 fixed-top">
       <div className="container">
 
-        {/* Logo */}
-        <a className="navbar-brand fw-bold fs-3 text-primary" href="/">
+        <a className="navbar-brand" href="/">
           VPrint
         </a>
 
-        {/* Mobile Toggle */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarContent"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        <div className="navbar-content">
 
-        {/* Navbar Content */}
-        <div className="collapse navbar-collapse" id="navbarContent">
-
-          {/* Center Menu */}
-          <ul className="navbar-nav mx-auto align-items-lg-center">
-
-            <li className="nav-item mx-lg-2">
-              <Link className="nav-link active-nav" to="/">
-                Find Locations
-              </Link>
-            </li>
-
-            <li className="nav-item mx-lg-2">
-              <Link className="nav-link" to="/">
-                How it Works
-              </Link>
-            </li>
-
-            <li className="nav-item mx-lg-2">
-              <Link className="nav-link" to="/">
-                Benefits
-              </Link>
-            </li>
-
-            <li className="nav-item mx-lg-2">
-              <Link className="nav-link" to="/">
-                FAQ
-              </Link>
-            </li>
-
+          <ul className="navbar-nav nav-menu">
+            <li><Link className="nav-link" to="/">Find Locations</Link></li>
+            <li><Link className="nav-link" to="/">How it Works</Link></li>
+            <li><Link className="nav-link" to="/">Benefits</Link></li>
+            <li><Link className="nav-link" to="/">FAQ</Link></li>
           </ul>
 
-          {/* Right Buttons */}
-          <div className="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-            <button className="btn btn-link text-dark text-decoration-none">
-              Login
-            </button>
+          {!isLoggedIn ? (
+            <div className="auth-buttons">
+              <button className="btn btn-link">Login</button>
+              <button className="btn signup-btn">Sign Up</button>
+            </div>
+          ) : (
+            <div className="profile-menu">
+              <span className="profile-name">
+                👤 {userName}
+              </span>
 
-            <button className="btn signup-btn">
-              Sign Up
-            </button>
-          </div>
+              <button
+                className="btn btn-link text-danger"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          )}
 
         </div>
-
       </div>
     </nav>
   );
