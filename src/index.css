@@ -904,3 +904,169 @@ code {
   border-radius: 10px;
   cursor: not-allowed;
 }
+
+.auth-page {
+  min-height: 100vh;
+  background: #f8f8fb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 500px;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.auth-card h2 {
+  color: #002c8c;
+  margin-bottom: 10px;
+}
+
+.auth-card p {
+  color: #6b7280;
+  margin-bottom: 25px;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.auth-card input {
+  border: 1px solid #d1d5db;
+  padding: 14px;
+  border-radius: 10px;
+  outline: none;
+}
+
+.auth-btn {
+  background: #002c8c;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.auth-btn:hover {
+  background: #001f66;
+}
+
+/* LocationDetails */
+
+.location-details-page {
+  background: #f8f8fb;
+  min-height: 100vh;
+  padding: 120px 0 60px;
+}
+
+.details-card {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.details-image {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+}
+
+.details-content {
+  padding: 30px;
+}
+
+.details-content h1 {
+  color: #081f4d;
+  margin: 15px 0;
+}
+
+.details-info {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 20px;
+}
+
+.details-info p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #555;
+}
+
+.details-status {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-weight: 600;
+}
+
+.available {
+  background: #6ee7b7;
+}
+
+.under-review {
+  background: #fbbf24;
+}
+
+.reserved {
+  background: #fecaca;
+}
+
+.reservation-box {
+  margin-top: 30px;
+  padding: 25px;
+  border-radius: 15px;
+  background: #f5f7ff;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.confirm-btn {
+  background: #002c8c;
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.confirm-btn:hover {
+  background: #001f66;
+}
+
+.reserved-btn {
+  background: #d1d5db;
+  color: #374151;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 10px;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .details-image {
+    height: 250px;
+  }
+
+  .details-info {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .reservation-box {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+}

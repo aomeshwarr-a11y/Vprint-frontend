@@ -1,19 +1,31 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaSearch,
   FaMapMarkerAlt,
-  FaArrowRight,
+
   FaFilter,
 } from "react-icons/fa";
 
-import collage from "../../assets/collage.jpeg";
+import collage from "../../assets/campus-hd.png";
 
 function Locations() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [cityFilter, setCityFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 3;
+  const handleReserve = (locationId) => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+  if (!isLoggedIn) {
+    navigate("/login");
+    return;
+  }
+
+  navigate(`/location/${locationId}`);
+};
 
   const locations = [
     {
@@ -67,6 +79,15 @@ function Locations() {
       city: "Hyderabad",
       area: "Tech Park Food Court",
       students: "4,000+",
+      status: "Available",
+      image: collage,
+    },
+    {
+      id: 7,
+      college: "MGIET",
+      city: "Hyderabad",
+      area: "Main Canteen Area",
+      students: "5,000+",
       status: "Available",
       image: collage,
     },
@@ -197,9 +218,12 @@ const totalPages = Math.ceil(
                   </div>
 
                   {location.status === "Available" ? (
-  <button className="reserve-btn">
-    Reserve Now
-  </button>
+  <button
+  className="reserve-btn"
+  onClick={() => handleReserve(location.id)}
+>
+  Reserve Now
+</button>
 ) : (
   <button className="reserved-btn" disabled>
     {location.status}

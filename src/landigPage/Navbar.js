@@ -40,8 +40,8 @@ function Navbar() {
 
           {!isLoggedIn ? (
             <div className="auth-buttons">
-              <button className="btn btn-link">Login</button>
-              <button className="btn signup-btn">Sign Up</button>
+              <button className="btn btn-link"><Link to="/login">Login</Link> </button>
+              <button className="btn signup-btn text-muted"><Link to="/signup">Sign Up</Link></button>
             </div>
           ) : (
             <div className="profile-menu">
