@@ -1,24 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../firebase";
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const loggedIn = localStorage.getItem("isLoggedIn");
-    const name = localStorage.getItem("userName");
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const name = user.displayName || user.email || "User";
+        setIsLoggedIn(true);
+        setUserName(name);
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userName", name);
+      } else {
+        setIsLoggedIn(false);
+        setUserName("");
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userName");
+      }
+    });
 
-    if (loggedIn === "true") {
-      setIsLoggedIn(true);
-      setUserName(name || "User");
-    }
+    return () => unsubscribe();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userName");
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   return (

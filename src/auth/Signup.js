@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
 
 function Signup() {
   const navigate = useNavigate();
@@ -11,6 +14,8 @@ function Signup() {
     password: "",
     confirmPassword: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -19,14 +24,68 @@ function Signup() {
     });
   };
 
-  const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  localStorage.setItem("isLoggedIn", "true");
-  localStorage.setItem("userName", formData.name);
+    if (!formData.email || !formData.password || !formData.name) {
+      setError("Name, email, and password are required fields.");
+      return;
+    }
 
-  navigate("/");
-};
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password should be at least 6 characters long.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+      
+      // Update display name
+      await updateProfile(userCredential.user, {
+        displayName: formData.name,
+      });
+
+      // Save user details to Firestore
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || "",
+        city: formData.city || "",
+        createdAt: new Date().toISOString(),
+      });
+
+      // Synchronize cache
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userName", formData.name);
+
+      navigate("/");
+    } catch (err) {
+      console.error("Signup error:", err);
+      let errMsg = "Failed to create an account. Please try again.";
+      if (err.code === "auth/email-already-in-use") {
+        errMsg = "This email is already registered.";
+      } else if (err.code === "auth/invalid-email") {
+        errMsg = "Invalid email address format.";
+      } else if (err.code === "auth/weak-password") {
+        errMsg = "The password is too weak. Please use at least 6 characters.";
+      }
+      setError(errMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   
 
   return (
@@ -35,12 +94,15 @@ function Signup() {
         <h2>Create Account</h2>
         <p>Reserve premium VPrint franchise locations.</p>
 
+        {error && <div className="auth-error">{error}</div>}
+
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="name"
             placeholder="Full Name"
             onChange={handleChange}
+            required
           />
 
           <input
@@ -48,6 +110,7 @@ function Signup() {
             name="email"
             placeholder="Email Address"
             onChange={handleChange}
+            required
           />
 
           <input
@@ -69,6 +132,7 @@ function Signup() {
             name="password"
             placeholder="Password"
             onChange={handleChange}
+            required
           />
 
           <input
@@ -76,10 +140,11 @@ function Signup() {
             name="confirmPassword"
             placeholder="Confirm Password"
             onChange={handleChange}
+            required
           />
 
-          <button type="submit" className="auth-btn">
-            Create Account
+          <button type="submit" className="auth-btn" disabled={loading}>
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
       </div>
