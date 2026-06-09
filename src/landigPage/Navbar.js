@@ -6,6 +6,7 @@ import { auth } from "../firebase";
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -87,17 +88,56 @@ function Navbar() {
             </div>
           ) : (
             <div className="profile-menu">
-              <span className="profile-name">
-                👤 {userName}
-              </span>
+  <button
+    className="profile-btn"
+    onClick={() => setShowDropdown(!showDropdown)}
+  >
+    <img
+      src={
+        auth.currentUser?.photoURL ||
+        "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+      }
+      alt="Profile"
+      className="profile-avatar"
+    />
+  </button>
 
-              <button
-                className="btn btn-link text-danger"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </div>
+  {showDropdown && (
+    <div className="profile-dropdown">
+      <div className="dropdown-header">
+        <img
+          src={
+            auth.currentUser?.photoURL ||
+            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+          }
+          alt="Profile"
+          className="dropdown-avatar"
+        />
+
+        <h6>{userName}</h6>
+      </div>
+
+      <Link to="/profile" className="dropdown-item">
+        Profile Details
+      </Link>
+
+      <Link to="/payments" className="dropdown-item">
+        My Payments
+      </Link>
+
+      <Link to="/reservations" className="dropdown-item">
+        My Reservations
+      </Link>
+
+      <button
+        className="dropdown-item logout-item"
+        onClick={handleLogout}
+      >
+        Logout
+      </button>
+    </div>
+  )}
+</div>
           )}
 
         </div>
