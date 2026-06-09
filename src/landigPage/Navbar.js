@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
@@ -8,26 +8,51 @@ function Navbar() {
   const [userName, setUserName] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const name = user.displayName || user.email || "User";
-        setIsLoggedIn(true);
-        setUserName(name);
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userName", name);
-      } else {
-        setIsLoggedIn(false);
-        setUserName("");
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userName");
-      }
-    });
+ // Firebase Auth Listener
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const name = user.displayName || user.email || "User";
+      setIsLoggedIn(true);
+      setUserName(name);
 
-    return () => unsubscribe();
-  }, []);
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userName", name);
+    } else {
+      setIsLoggedIn(false);
+      setUserName("");
 
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("userName");
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
+
+
+// Close dropdown when clicking outside
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target)
+    ) {
+      setShowDropdown(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+  };
+}, []);
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -87,7 +112,7 @@ function Navbar() {
               <button className="btn signup-btn text-muted"><Link to="/signup">Sign Up</Link></button>
             </div>
           ) : (
-            <div className="profile-menu">
+            <div className="profile-menu" ref={dropdownRef}>
   <button
     className="profile-btn"
     onClick={() => setShowDropdown(!showDropdown)}
@@ -117,15 +142,27 @@ function Navbar() {
         <h6>{userName}</h6>
       </div>
 
-      <Link to="/profile" className="dropdown-item">
+      <Link
+  to="/profile"
+  className="dropdown-item"
+  onClick={() => setShowDropdown(false)}
+>
         Profile Details
       </Link>
 
-      <Link to="/payments" className="dropdown-item">
+      <Link
+  to="/payments"
+  className="dropdown-item"
+  onClick={() => setShowDropdown(false)}
+>
         My Payments
       </Link>
 
-      <Link to="/reservations" className="dropdown-item">
+      <Link
+  to="/reservation"
+  className="dropdown-item"
+  onClick={() => setShowDropdown(false)}
+>
         My Reservations
       </Link>
 
