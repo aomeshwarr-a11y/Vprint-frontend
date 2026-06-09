@@ -2,14 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter ,Routes,Route } from 'react-router-dom';
 import './index.css';
-import HomePage from './landigPage/home/HomePage';
-import Navbar from './landigPage/Navbar';
-import Footer from './landigPage/Footer';
-import LocationPage from './landigPage/findlocations/LocationPage';
-import PageNotFound from './landigPage/PageNotFound';
+import HomePage from './landingPage/home/HomePage';
+import Navbar from './landingPage/Navbar';
+import Footer from './landingPage/Footer';
+import LocationPage from './landingPage/findlocations/LocationPage';
+import PageNotFound from './landingPage/PageNotFound';
 import Signup from './auth/Signup';
 import Login from './auth/Login';
-import LocationDetails from './landigPage/findlocations/LocationDetails';
+import LocationDetails from './landingPage/findlocations/LocationDetails';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
