@@ -1,6 +1,7 @@
 import React from 'react';
 import campusBg from '../../assets/campus-hd.png';
 import { Link } from 'react-router-dom';
+import { HiArrowRight } from 'react-icons/hi';
 
 function Hero() {
   return (
@@ -14,10 +15,10 @@ function Hero() {
     >
       <div className="container">
         <div className="row align-items-center">
-          <div className="col-lg-7">
+          <div className="col-lg-8">
             <div className="hero-content">
               <span className="expanding-badge">
-                Now Expanding
+                Now Expanding to New Campuses
               </span>
 
               <h1 className="hero-title">
@@ -30,10 +31,10 @@ function Hero() {
                 with our state-of-the-art Kiosks.
               </p>
 
-              <div className="d-flex flex-column flex-sm-row gap-3">
+              <div className="d-flex flex-column flex-sm-row gap-4">
                 <Link to="/locations" className="btn-location">
                   View Available Locations
-                  <span className="ms-2">→</span>
+                  <HiArrowRight className="fs-5" />
                 </Link>
 
                 <button className="btn-benefits">

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaCheck, FaBolt, FaTimes } from "react-icons/fa";
+import { FaCheck, FaBolt, FaTimes, FaShieldAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 function PriorityModal({ onClose }) {
@@ -49,7 +49,7 @@ function PriorityModal({ onClose }) {
 
       // Razorpay options
       const options = {
-        key: "rzp_test_1DP5mmOlF23erer", // Replace with your Razorpay Key ID
+        key: "rzp_test_Szc21ohivp5xw0", // Replace with your Razorpay Key ID
         amount: 49900, // Amount in paise (₹499 = 49900 paise)
         currency: "INR",
         name: "VPrint - Priority Access",
@@ -74,7 +74,7 @@ function PriorityModal({ onClose }) {
           },
         },
         theme: {
-          color: "#FF9500",
+          color: "#2563eb",
         },
       };
 
@@ -108,123 +108,105 @@ function PriorityModal({ onClose }) {
   return (
     <div className="priority-modal-overlay">
 
-      <div className="priority-modal">
+      <div className="priority-modal shadow-2xl border-0 overflow-hidden">
 
         <button
-          className="close-btn"
+          className="close-btn position-absolute top-0 end-0 m-4 shadow-sm"
           onClick={onClose}
         >
           <FaTimes />
         </button>
 
-        <p className="modal-label">
-          INVESTOR WAITLIST
-        </p>
+        <div className="text-center mb-5 mt-3">
+          <p className="modal-label text-primary fw-bold tracking-wider">
+            INVESTOR WAITLIST
+          </p>
+          <h2 className="display-6 fw-bold mb-3">
+            Choose Your Access Level
+          </h2>
+          <p className="modal-description max-w-lg mx-auto text-muted">
+            Both options are free to join. Priority gives you
+            guaranteed first access to premium VPrint campus
+            locations before public release.
+          </p>
+        </div>
 
-        <h2>
-          Choose how you want in
-        </h2>
+        <div className="table-responsive">
+          <table className="comparison-table table table-hover align-middle">
+            <thead className="bg-light">
+              <tr>
+                <th className="py-4 px-4 text-muted small fw-bold">FEATURE</th>
+                <th className="py-4 px-4 text-center text-muted small fw-bold">FREE</th>
+                <th className="py-4 px-4 text-center priority-column">
+                  <span className="d-flex align-items-center justify-content-center gap-2">
+                    <FaBolt /> PRIORITY
+                  </span>
+                </th>
+              </tr>
+            </thead>
 
-        <p className="modal-description">
-          Both options are free to join. Priority gives you
-          guaranteed first access to premium VPrint campus
-          locations before public release.
-        </p>
+            <tbody>
+              <tr>
+                <td className="py-3 px-4 fw-medium">Join investor queue</td>
+                <td className="text-center text-success"><FaCheck /></td>
+                <td className="text-center text-success"><FaCheck /></td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 fw-medium">Slot confirmed on availability</td>
+                <td className="text-center text-success"><FaCheck /></td>
+                <td className="text-center text-success"><FaCheck /></td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 fw-medium">Guaranteed slot before launch</td>
+                <td className="text-center text-muted">—</td>
+                <td className="text-center text-success"><FaCheck /></td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 fw-medium">First pick of locations</td>
+                <td className="text-center text-muted">—</td>
+                <td className="text-center text-success"><FaCheck /></td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 fw-medium">Dedicated onboarding support</td>
+                <td className="text-center text-muted">—</td>
+                <td className="text-center text-success"><FaCheck /></td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 fw-medium">Queue Position</td>
+                <td className="text-center text-muted">Standard</td>
+                <td className="text-center priority-text fw-bold">Front Of Queue</td>
+              </tr>
+              <tr className="bg-light-subtle">
+                <td className="py-4 px-4 fw-bold">Cost To Join</td>
+                <td className="text-center fw-bold text-muted">Free</td>
+                <td className="text-center priority-text fw-bold h4 mb-0">₹499</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-        <table className="comparison-table">
-
-          <thead>
-            <tr>
-              <th>Feature</th>
-              <th>Free Waitlist</th>
-              <th className="priority-column">
-                ⚡ Priority Waitlist
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            <tr>
-              <td>Join investor queue</td>
-              <td><FaCheck /></td>
-              <td><FaCheck /></td>
-            </tr>
-
-            <tr>
-              <td>Slot confirmed on availability</td>
-              <td><FaCheck /></td>
-              <td><FaCheck /></td>
-            </tr>
-
-            <tr>
-              <td>Guaranteed slot before launch</td>
-              <td>—</td>
-              <td><FaCheck /></td>
-            </tr>
-
-            <tr>
-              <td>First pick of locations</td>
-              <td>—</td>
-              <td><FaCheck /></td>
-            </tr>
-
-            <tr>
-              <td>Dedicated onboarding support</td>
-              <td>—</td>
-              <td><FaCheck /></td>
-            </tr>
-
-            <tr>
-              <td>₹499 adjusted against setup fee</td>
-              <td>—</td>
-              <td><FaCheck /></td>
-            </tr>
-
-            <tr>
-              <td>Queue Position</td>
-              <td>After Priority Members</td>
-              <td className="priority-text">
-                Front Of Queue
-              </td>
-            </tr>
-
-            <tr>
-              <td>Cost To Join</td>
-              <td>Free</td>
-              <td className="priority-text">
-                ₹499
-              </td>
-            </tr>
-
-          </tbody>
-
-        </table>
-
-        <div className="modal-buttons">
-
+        <div className="modal-buttons mt-5">
           <button 
-            className="free-btn"
+            className="free-btn btn btn-outline-secondary py-3 fw-bold rounded-4 border-2"
             onClick={handleFreeWaitlist}
           >
             Join Free Waitlist
           </button>
 
           <button
-            className="priority-pay-btn"
+            className="priority-pay-btn py-3 fw-bold rounded-4 border-0 shadow-lg"
             onClick={handlePriorityAccess}
             disabled={loading}
           >
-            <FaBolt />
-            {loading ? "Processing..." : "Get Priority Access ₹499"}
+            <FaBolt className="me-2" />
+            {loading ? "Processing..." : "Get Priority Access Now"}
           </button>
-
         </div>
 
-        <p className="modal-note">
-          ₹499 will be adjusted against your final
-          franchise setup fee.
-        </p>
+        <div className="d-flex align-items-center justify-content-center gap-2 mt-4 text-muted small opacity-75 italic">
+          <FaShieldAlt />
+          <span>₹499 will be adjusted against your final franchise setup fee.</span>
+        </div>
 
       </div>
 

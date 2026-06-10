@@ -72,6 +72,7 @@ if (user) {
 }
 
     if (error) throw error;
+    
 
     alert(
       "Account created successfully. Please check your email for verification."
