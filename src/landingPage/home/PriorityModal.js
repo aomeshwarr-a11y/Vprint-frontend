@@ -1,43 +1,109 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaCheck, FaBolt, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 function PriorityModal({ onClose }) {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const handlePriorityAccess = () => {
+  // Load Razorpay script
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
 
-  const isLoggedIn =
-    localStorage.getItem("isLoggedIn");
+  const handlePriorityAccess = async () => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-  if (!isLoggedIn) {
+    if (!isLoggedIn) {
+      localStorage.setItem("redirectAfterLogin", "priority-access");
+      alert("Please login to get Priority Access.");
+      navigate("/login");
+      return;
+    }
 
-    localStorage.setItem(
-      "redirectAfterLogin",
-      "priority-access"
-    );
+    setLoading(true);
 
-    alert(
-      "Please login to get Priority Access."
-    );
+    try {
+      // Load Razorpay script
+      const res = await loadRazorpayScript();
 
-    
-navigate("/login");
+      if (!res) {
+        alert("Failed to load Razorpay. Please check your internet connection.");
+        setLoading(false);
+        return;
+      }
 
-    return;
-  }
+      // Get user details
+      const userName = localStorage.getItem("userName");
+      const userEmail = localStorage.getItem("userEmail");
 
-  // Temporary until Razorpay is added
+      // Razorpay options
+      const options = {
+        key: "rzp_test_1DP5mmOlF23erer", // Replace with your Razorpay Key ID
+        amount: 49900, // Amount in paise (₹499 = 49900 paise)
+        currency: "INR",
+        name: "VPrint - Priority Access",
+        description: "Priority Waitlist Membership - ₹499",
+        prefill: {
+          name: userName || "User",
+          email: userEmail || "",
+        },
+        handler: function (response) {
+          // Payment successful
+          localStorage.setItem("priorityMember", "true");
+          localStorage.setItem("paymentId", response.razorpay_payment_id);
+          localStorage.setItem("paymentDate", new Date().toISOString());
 
-  localStorage.setItem(
-    "priorityMember",
-    "true"
-  );
+          alert("Priority Membership Activated! Payment ID: " + response.razorpay_payment_id);
+          onClose();
+          setLoading(false);
+        },
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+          },
+        },
+        theme: {
+          color: "#FF9500",
+        },
+      };
 
-  alert("Priority Membership Activated!");
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while processing your payment. Please try again.");
+      setLoading(false);
+    }
+  };
 
-  onClose();
-};
+  const handleFreeWaitlist = () => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (!isLoggedIn) {
+      localStorage.setItem("redirectAfterLogin", "free-waitlist");
+      alert("Please login to join the waitlist.");
+      navigate("/login");
+      return;
+    }
+
+    // Save free waitlist status
+    localStorage.setItem("freeWaitlistMember", "true");
+    localStorage.setItem("waitlistDate", new Date().toISOString());
+
+    alert("Successfully joined the Free Waitlist!");
+    onClose();
+  };
 
   return (
     <div className="priority-modal-overlay">
@@ -137,16 +203,20 @@ navigate("/login");
 
         <div className="modal-buttons">
 
-          <button className="free-btn">
+          <button 
+            className="free-btn"
+            onClick={handleFreeWaitlist}
+          >
             Join Free Waitlist
           </button>
 
           <button
             className="priority-pay-btn"
             onClick={handlePriorityAccess}
+            disabled={loading}
           >
             <FaBolt />
-            Get Priority Access ₹499
+            {loading ? "Processing..." : "Get Priority Access ₹499"}
           </button>
 
         </div>
